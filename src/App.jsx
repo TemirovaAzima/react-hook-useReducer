@@ -1,30 +1,36 @@
-import  {useReducer} from 'react'
-const initialState = {count: 0}
-const reducer = (state, action)=>{
+import {useState, useReducer}  from 'react'
+import {counterReducer, initialState} from "./components/CounterReducer.jsx";
 
-        switch(action.type){
-            case "INCREMENT" :
-                return({count: state.count + 1});
-            case "DECREMENT" :
-                return ({count: state.count -1 });
-            case "RESET" :
-                return ({count:0});
-            default :
-                throw new Error("Uknown action type")
-        }
+const App = ()=> {
 
-}
+    const [state, dispatch] = useReducer(counterReducer, initialState)
+    const [inputValue, setInputValue] = useState(0)
 
-const App = () => {
-    const [state, dispatch] = useReducer(reducer, initialState);
+    const handleIncrement = ()=> dispatch({type: 'INCREMENT'});
+    const handleDecrement = () => dispatch({type: 'DECREMENT'});
+    const handleIncrementByAmount = ()=> {
+        dispatch({type: "incrementByAmount", payload:Number(inputValue)}) ;
+        setInputValue(0) ;}
+    const handleDecrementByAmount = () => {
+        dispatch({type: "decrementByAmount", payload: Number(inputValue)});
+        setInputValue(0)
+    }
+
+
     return (
         <div>
-            <h1> Count :{state.count}</h1>
-            <button onClick={()=> dispatch({type: "INCREMENT"})}>Increment</button>
-            <button  onClick={()=> dispatch({type : "DECREMENT"})}>Decrement</button>
-            <button onClick={()=>dispatch({type: "RESET"})}>Reset</button>
+            <h1>{state.count}</h1>
+            <button onClick={handleIncrement}>Increment</button>
+            <button onClick={handleDecrement}>Decrement</button>
+            <div>
+            <input value={inputValue}
+                   type="number"
+                   placeholder='enter number'
+                   onChange={(e) => setInputValue(e.target.value)}/>
+            <button onClick={handleIncrementByAmount}>Add</button>
+            <button onClick={handleDecrementByAmount}>Subtract</button>
+        </div>
         </div>
     )
 }
 export default App
-
